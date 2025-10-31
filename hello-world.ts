@@ -1,10 +1,17 @@
-import {LitElement, html} from 'lit';
+import {LitElement, html, css} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 import * as faceapi from 'face-api.js';
 import {faceDetection} from './signals.js';
 
 @customElement('hello-world')
 export class HelloWorld extends LitElement {
+
+  static styles = css`
+    video#video {
+      position: absolute;
+      visibility: hidden;
+    }
+  `;
 
   @query('#canvas')
   private canvas: HTMLCanvasElement | undefined;
@@ -19,8 +26,8 @@ export class HelloWorld extends LitElement {
   async firstUpdated() {
     await this.loadModels();
 
-    this.buffer.width = this.canvas!.width;
-    this.buffer.height = this.canvas!.height;
+    this.canvas!.width = this.buffer.width = this.video!.width;
+    this.canvas!.height = this.buffer.height = this.video!.height;
 
     this.startVideoStream();
   }
@@ -33,7 +40,7 @@ export class HelloWorld extends LitElement {
 
   async startVideoStream() {
     if (this.video) {
-      const stream = await navigator.mediaDevices.getUserMedia({video: {}})
+      const stream = await navigator.mediaDevices.getUserMedia({video: {}});
       this.video.srcObject = stream;
       this.video.addEventListener('play', () => {
         this.detectFaces();
@@ -101,7 +108,7 @@ export class HelloWorld extends LitElement {
         }
       }
 
-      this.mediaRecorder.start();
+      this.mediaRecorder.start(1000);
       console.log('Recording started');
     }
   }
@@ -139,7 +146,7 @@ export class HelloWorld extends LitElement {
         <button @click=${this.exportRecording}>Export Recording</button>
       </div>
       <video id="video" muted=true autoplay=true width="640" height="480"></video>
-      <canvas id="canvas" width="640" height="480"></canvas>
+      <canvas id="canvas"></canvas>
     `;
   }
 }
