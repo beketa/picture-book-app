@@ -56,8 +56,8 @@ export class FaceDetector extends LitElement {
 
   async detectFaces() {
     if (this.canvas) {
-      const bufferContext = this.buffer.getContext('2d');
-      const canvasContext = this.canvas.getContext('2d');
+      const bufferContext = this.buffer.getContext('2d', {alpha: false, willReadFrequently: true});
+      const canvasContext = this.canvas.getContext('2d', {alpha: false});
       setTimeout(async () => {
         if (this.video && this.canvas && bufferContext && canvasContext) {
 
