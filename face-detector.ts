@@ -38,7 +38,7 @@ export class FaceDetector extends LitElement {
   }
 
   async loadModels() {
-    const MODEL_URL = '/models';
+    const MODEL_URL = './models';
     await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
     await faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL);
   }
