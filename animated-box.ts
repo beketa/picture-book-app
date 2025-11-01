@@ -40,5 +40,3 @@ class AnimatedBox extends LitElement {
     `;
   }
 }
-
-customElements.define('animated-box', AnimatedBox);
