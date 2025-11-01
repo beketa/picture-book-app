@@ -3915,12 +3915,19 @@ detected faces: ${e.length}`;new Ol(o.split(`
         <button @click=${this.stopRecording}>Stop Recording</button>
         <button @click=${this.exportRecording}>Export Recording</button>
       </div>
-      <video id="video" muted=true autoplay=true width="640" height="480"></video>
-      <canvas id="canvas"></canvas>
+      <div id="container">
+        <video id="video" muted=true autoplay=true width="640" height="480"></video>
+        <canvas id="canvas"></canvas>
+      <div>
     `}};Ar.styles=Uu`
-    video#video {
+    div#container {
+      position: relative;
+    }
+
+    canvas#canvas {
       position: absolute;
-      visibility: hidden;
+      top: 0px;
+      left: 0px;
     }
   `;Es([gi("#canvas")],Ar.prototype,"canvas",2);Es([gi("#video")],Ar.prototype,"video",2);Ar=Es([mi("face-detector")],Ar);var Vx=Object.getOwnPropertyDescriptor,zx=(r,t,e,n)=>{for(var o=n>1?void 0:n?Vx(t,e):t,a=r.length-1,i;a>=0;a--)(i=r[a])&&(o=i(o)||o);return o};let Bu=class extends Bx(En){render(){return io`
       <h2>detected faces: ${hi.get().numFaces}</h2>
