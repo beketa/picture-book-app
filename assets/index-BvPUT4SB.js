@@ -3919,8 +3919,8 @@ detected faces: ${e.length}`;new Ol(o.split(`
       <canvas id="canvas"></canvas>
     `}};Ar.styles=Uu`
     video#video {
-      // position: absolute;
-      // visibility: hidden;
+      position: absolute;
+      visibility: hidden;
     }
   `;Es([gi("#canvas")],Ar.prototype,"canvas",2);Es([gi("#video")],Ar.prototype,"video",2);Ar=Es([mi("face-detector")],Ar);var Vx=Object.getOwnPropertyDescriptor,zx=(r,t,e,n)=>{for(var o=n>1?void 0:n?Vx(t,e):t,a=r.length-1,i;a>=0;a--)(i=r[a])&&(o=i(o)||o);return o};let Bu=class extends Bx(En){render(){return io`
       <h2>detected faces: ${hi.get().numFaces}</h2>
