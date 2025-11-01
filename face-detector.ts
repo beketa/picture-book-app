@@ -7,9 +7,14 @@ import {faceDetection} from './signals.js';
 export class FaceDetector extends LitElement {
 
   static styles = css`
-    video#video {
+    div#container {
+      position: relative;
+    }
+
+    canvas#canvas {
       position: absolute;
-      visibility: hidden;
+      top: 0px;
+      left: 0px;
     }
   `;
 
@@ -53,7 +58,7 @@ export class FaceDetector extends LitElement {
     if (this.canvas) {
       const bufferContext = this.buffer.getContext('2d');
       const canvasContext = this.canvas.getContext('2d');
-      setInterval(async () => {
+      setTimeout(async () => {
         if (this.video && this.canvas && bufferContext && canvasContext) {
 
           bufferContext.clearRect(0, 0, this.buffer.width, this.buffer.height);
@@ -74,7 +79,9 @@ export class FaceDetector extends LitElement {
           canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
           canvasContext.drawImage(this.buffer, 0, 0, this.buffer.width, this.buffer.height);
         }
-      }, 100);
+        this.detectFaces();
+      },
+      50);
     }
   }
 
@@ -145,8 +152,10 @@ export class FaceDetector extends LitElement {
         <button @click=${this.stopRecording}>Stop Recording</button>
         <button @click=${this.exportRecording}>Export Recording</button>
       </div>
-      <video id="video" muted=true autoplay=true width="640" height="480"></video>
-      <canvas id="canvas"></canvas>
+      <div id="container">
+        <video id="video" muted=true autoplay=true width="640" height="480"></video>
+        <canvas id="canvas"></canvas>
+      <div>
     `;
   }
 }
