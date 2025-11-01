@@ -2,7 +2,7 @@ import {LitElement, html, css} from 'lit';
 import {customElement, query} from 'lit/decorators.js';
 
 @customElement("animated-box")
-class AnimatedBox extends LitElement {
+export class AnimatedBox extends LitElement {
 
   static styles = css`
     #box {
@@ -14,9 +14,24 @@ class AnimatedBox extends LitElement {
   `;
 
   @query('#box')
-  private box: HTMLCanvasElement | undefined;
+  private box: HTMLElement | undefined;
+
+  private isAnimated: boolean = false;
+  private shouldBeAnimated: boolean = false;
 
   firstUpdated() {
+    this.setAnimated(true);
+  }
+
+  setAnimated(animated: boolean) {
+    this.shouldBeAnimated = animated;
+    if (this.shouldBeAnimated && !this.isAnimated) {
+      this.startAnimation();
+    }
+  }
+
+  startAnimation() {
+    this.isAnimated = true;
     this.box?.animate(
       [
         { transform: 'translate(0px, 0px)' },
@@ -27,11 +42,16 @@ class AnimatedBox extends LitElement {
       ],
       {
         duration: 3000,
-        iterations: Infinity,
         direction: 'normal',
         easing: 'ease-in-out'
       }
-    );
+    ).finished.then(() => {
+      if (this.shouldBeAnimated) {
+        this.startAnimation();
+      } else {
+        this.isAnimated = false;
+      }
+    });
   }
 
   render() {
