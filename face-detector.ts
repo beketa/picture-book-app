@@ -3,8 +3,8 @@ import {customElement, query} from 'lit/decorators.js';
 import * as faceapi from 'face-api.js';
 import {faceDetection} from './signals.js';
 
-@customElement('hello-world')
-export class HelloWorld extends LitElement {
+@customElement('face-detector')
+export class FaceDetector extends LitElement {
 
   static styles = css`
     video#video {
