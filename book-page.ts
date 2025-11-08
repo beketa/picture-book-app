@@ -2,15 +2,15 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { SignalWatcher } from '@lit-labs/signals';
 import { faceDetection } from './signals.js';
-import { AnimatedBox } from './animated-box.js';
+import { Kezaruu } from './kezaruu.js';
 
 @customElement('book-page')
 export class BookPage extends SignalWatcher(LitElement) {
   @property({ type: String })
   backgroundImage = '';
 
-  @query("animated-box")
-  private box: AnimatedBox | undefined;
+  @query("kezaruu-element")
+  private kezaruu: Kezaruu | undefined;
 
   static styles = css`
     :host {
@@ -26,14 +26,18 @@ export class BookPage extends SignalWatcher(LitElement) {
       background-size: cover;
       background-position: center;
     }
+
+    kezaruu {
+      max-height: 480px;
+    }
   `;
 
   render() {
     const detection = faceDetection.get();
-    this.box?.setAnimated(detection.numFaces > 0);
+    this.kezaruu?.setAnimated(detection.numFaces > 0);
     return html`
       <div class="background" style="background-image: url(${this.backgroundImage})">
-        <animated-box></animated-box>
+        <kezaruu-element></kezaruu-element>
       </div>
     `;
   }

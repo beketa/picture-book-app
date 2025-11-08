@@ -3,12 +3,22 @@
   <head>
     <script type="module" src="/face-detector.ts"></script>
     <script type="module" src="/face-display.ts"></script>
-    <script type="module" src="/animated-box.ts"></script>
+    <script type="module" src="/kezaruu.ts"></script>
     <script type="module" src="/book-page.ts"></script>
+    <style>
+      div#main {
+        display: flex;
+      }
+
+      book-page {
+        max-height: 480px;
+      }
+    </style>
   </head>
   <body>
-    <face-detector></face-detector>
-    <book-page background-image="https://picsum.photos/800/600">
-    </book-page>
+    <div id="main">
+      <face-detector></face-detector>
+      <book-page></book-page>
+    </div>
   </body>
 </html>
