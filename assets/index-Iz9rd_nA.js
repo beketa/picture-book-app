@@ -3977,9 +3977,9 @@ detected faces: ${e.length}`;new Ul(o.split(`
       width: 2048px;
       height: 1536px;
     }
-  `;yn([Bt("img#head")],Ot.prototype,"head",2);yn([Bt("img#face")],Ot.prototype,"face",2);yn([Bt("img#ears")],Ot.prototype,"ears",2);yn([Bt("img#mouth")],Ot.prototype,"mouth",2);yn([Bt("img#nose")],Ot.prototype,"nose",2);yn([Bt("div#eyes")],Ot.prototype,"eyes",2);yn([Bt("img#hand")],Ot.prototype,"hand",2);Ot=yn([Lo("animated-kezaruu")],Ot);var Jx=Object.defineProperty,Qx=Object.getOwnPropertyDescriptor,Ds=(r,t,e,n)=>{for(var o=n>1?void 0:n?Qx(t,e):t,a=r.length-1,i;a>=0;a--)(i=r[a])&&(o=(n?i(t,e,o):i(o))||o);return n&&o&&Jx(t,e,o),o};let Pr=class extends Ch(cn){constructor(){super(...arguments),this.backgroundImage=""}render(){var t;const r=Oo.get();return(t=this.kezaruu)==null||t.setAnimated(r.numFaces>0),Rr`
+  `;yn([Bt("img#head")],Ot.prototype,"head",2);yn([Bt("img#face")],Ot.prototype,"face",2);yn([Bt("img#ears")],Ot.prototype,"ears",2);yn([Bt("img#mouth")],Ot.prototype,"mouth",2);yn([Bt("img#nose")],Ot.prototype,"nose",2);yn([Bt("div#eyes")],Ot.prototype,"eyes",2);yn([Bt("img#hand")],Ot.prototype,"hand",2);Ot=yn([Lo("kezaruu")],Ot);var Jx=Object.defineProperty,Qx=Object.getOwnPropertyDescriptor,Ds=(r,t,e,n)=>{for(var o=n>1?void 0:n?Qx(t,e):t,a=r.length-1,i;a>=0;a--)(i=r[a])&&(o=(n?i(t,e,o):i(o))||o);return n&&o&&Jx(t,e,o),o};let Pr=class extends Ch(cn){constructor(){super(...arguments),this.backgroundImage=""}render(){var t;const r=Oo.get();return(t=this.kezaruu)==null||t.setAnimated(r.numFaces>0),Rr`
       <div class="background" style="background-image: url(${this.backgroundImage})">
-        <animated-kezaruu></animated-kezaruu>
+        <kezaruu></kezaruu>
       </div>
     `}};Pr.styles=xi`
     :host {
@@ -3996,7 +3996,7 @@ detected faces: ${e.length}`;new Ul(o.split(`
       background-position: center;
     }
 
-    animated-kezaruu {
+    kezaruu {
       max-height: 480px;
     }
-  `;Ds([Yh({type:String})],Pr.prototype,"backgroundImage",2);Ds([Bt("animated-kezaruu")],Pr.prototype,"kezaruu",2);Pr=Ds([Lo("book-page")],Pr)});export default Zx();
+  `;Ds([Yh({type:String})],Pr.prototype,"backgroundImage",2);Ds([Bt("kezaruu")],Pr.prototype,"kezaruu",2);Pr=Ds([Lo("book-page")],Pr)});export default Zx();
