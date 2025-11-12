@@ -8,26 +8,20 @@ export class Kezaruu extends LitElement implements Actor {
 
   static styles = css`
     div#container {
-      position: relative;
-      transform: scale(0.3, 0.3);
+      display: grid;
+      transform: scale(calc(480 / 1536), calc(480 / 1536));
       transform-origin: top left;
     }
 
     div img {
-      position: absolute;
-    }
-
-    div img#body {
+      grid-area: 1 / 1;
     }
 
     div#eyes {
-      position: absolute;
       background-color:transparent;
       background-image:url(./img/eyes.png);
       background-repeat:no-repeat;
-      transform-origin: center;
-      width: 2048px;
-      height: 1536px;
+      grid-area: 1 / 1;
     }
   `;
 

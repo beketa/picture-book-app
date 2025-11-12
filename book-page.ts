@@ -6,37 +6,28 @@ import { Kezaruu } from './kezaruu.js';
 
 @customElement('book-page')
 export class BookPage extends SignalWatcher(LitElement) {
-  @property({ type: String })
-  backgroundImage = '';
-
-  @query("kezaruu-element")
-  private kezaruu: Kezaruu | undefined;
 
   static styles = css`
-    :host {
-      display: block;
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .background {
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-    }
-
-    kezaruu {
+    kezaruu-element {
       max-height: 480px;
     }
   `;
 
+  @query("kezaruu-element")
+  private kezaruu: Kezaruu | undefined;
+
+  private numFaces = 1;
+
+  setNumFaces(numFaces: number) {
+    this.numFaces = numFaces;
+    this.requestUpdate();
+  }
+
   render() {
     const detection = faceDetection.get();
-    this.kezaruu?.setAnimated(detection.numFaces > 0);
+    this.kezaruu?.setAnimated(detection.numFaces >= this.numFaces);
     return html`
-      <div class="background" style="background-image: url(${this.backgroundImage})">
+      <div>
         <kezaruu-element></kezaruu-element>
       </div>
     `;

@@ -1,29 +1,31 @@
-import {LitElement, html, css} from 'lit';
-import {customElement, query} from 'lit/decorators.js';
+import { LitElement, html, css } from 'lit';
+import { customElement, query } from 'lit/decorators.js';
 import * as faceapi from 'face-api.js';
-import {faceDetection} from './signals.js';
+import { faceDetection } from './signals.js';
 
 @customElement('face-detector')
 export class FaceDetector extends LitElement {
 
   static styles = css`
     div#container {
-      position: relative;
+      display: grid;
     }
 
     canvas#canvas {
-      position: absolute;
-      top: 0px;
-      left: 0px;
+      grid-area: 1 / 1;
+    }
+
+    video {
+      grid-area: 1 / 1;
     }
   `;
 
   @query('#canvas')
-  private canvas: HTMLCanvasElement | undefined;
+  private canvas!: HTMLCanvasElement;
   private buffer = document.createElement('canvas');
 
   @query('#video')
-  private video: HTMLVideoElement | undefined;
+  private video!: HTMLVideoElement;
 
   private mediaRecorder: MediaRecorder | null = null;
   private writableStream: any = null;
@@ -31,8 +33,8 @@ export class FaceDetector extends LitElement {
   async firstUpdated() {
     await this.loadModels();
 
-    this.canvas!.width = this.buffer.width = this.video!.width;
-    this.canvas!.height = this.buffer.height = this.video!.height;
+    this.canvas.width = this.buffer.width = this.video.width;
+    this.canvas.height = this.buffer.height = this.video.height;
 
     this.startVideoStream();
   }
@@ -44,51 +46,59 @@ export class FaceDetector extends LitElement {
   }
 
   async startVideoStream() {
-    if (this.video) {
-      const stream = await navigator.mediaDevices.getUserMedia({video: {}});
-      this.video.srcObject = stream;
-      this.video.addEventListener('play', () => {
-        this.detectFaces();
-        this.startRecording();
-      });
-    }
+    const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+    this.video.srcObject = stream;
+    this.video.addEventListener('play', () => {
+      this.startFaceDetection();
+    });
   }
 
+  startFaceDetection() {
+    this.detectFaces();
+  }
+
+  private frameTimes: number[] = [];
+  private frameRate = 0;
+
   async detectFaces() {
-    if (this.canvas) {
-      const bufferContext = this.buffer.getContext('2d', {alpha: false, willReadFrequently: true});
-      const canvasContext = this.canvas.getContext('2d', {alpha: false});
-      setTimeout(async () => {
-        if (this.video && this.canvas && bufferContext && canvasContext) {
 
-          bufferContext.clearRect(0, 0, this.buffer.width, this.buffer.height);
-          bufferContext.drawImage(this.video, 0, 0, this.buffer.width, this.buffer.height);
+    const bufferContext = this.buffer.getContext('2d', { alpha: false, willReadFrequently: true });
+    const canvasContext = this.canvas.getContext('2d', { alpha: false });
 
-          const detections = await faceapi.detectAllFaces(this.buffer, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
-          faceapi.draw.drawDetections(this.buffer, detections);
+    if (bufferContext && canvasContext) {
+      bufferContext.clearRect(0, 0, this.buffer.width, this.buffer.height);
+      bufferContext.drawImage(this.video, 0, 0, this.buffer.width, this.buffer.height);
 
-          const newFaceDetection = {
-            numFaces: detections.length,
-            faces: detections.map(detection => ({age: detection.age})),
-          };
-          faceDetection.set(newFaceDetection);
+      const detections = await faceapi.detectAllFaces(this.buffer, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+      faceapi.draw.drawDetections(this.buffer, detections);
 
-          const textLabel = `${(new Date()).toLocaleString()}\ndetected faces: ${detections.length}`;
-          (new faceapi.draw.DrawTextField(textLabel.split('\n'), new faceapi.Point(0, 0))).draw(this.buffer);
+      const newFaceDetection = {
+        numFaces: detections.length,
+        faces: detections.map(detection => ({ age: detection.age })),
+      };
+      faceDetection.set(newFaceDetection);
 
-          canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-          canvasContext.drawImage(this.buffer, 0, 0, this.buffer.width, this.buffer.height);
-        }
-        this.detectFaces();
-      },
-      50);
+      const textLabel = `${(new Date()).toLocaleString()}\ndetected faces: ${detections.length}\nframe rate: ${this.frameRate.toFixed(1)}`;
+      (new faceapi.draw.DrawTextField(textLabel.split('\n'), new faceapi.Point(0, 0))).draw(this.buffer);
+
+      canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      canvasContext.drawImage(this.buffer, 0, 0, this.buffer.width, this.buffer.height);
+
+      this.frameTimes.push(Date.now());
+      if (this.frameTimes.length > 5) {
+        this.frameTimes.shift();
+      }
+      if (this.frameTimes.length == 5) {
+        this.frameRate = 5000 / (this.frameTimes[4] - this.frameTimes[0]);
+      }
     }
+    setTimeout(() => this.detectFaces(), 50);
   }
 
   async startRecording() {
     try {
       const opfsRoot = await navigator.storage.getDirectory();
-      const handle = await opfsRoot.getFileHandle("test.webm", {create: true});
+      const handle = await opfsRoot.getFileHandle("test.mp4", {create: true});
       this.writableStream = await handle.createWritable();
     } catch (e) {
       console.log('Open file failed: ', e);
@@ -98,7 +108,7 @@ export class FaceDetector extends LitElement {
     if (this.canvas) {
       const stream = this.canvas.captureStream(30);  // 30 FPS
       this.mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm; codecs=vp9'
+        mimeType: 'video/mp4;codecs=avc1'
       });
 
       this.mediaRecorder.ondataavailable = (event) => {
@@ -130,11 +140,11 @@ export class FaceDetector extends LitElement {
   async exportRecording() {
     try {
       const opfsRoot = await navigator.storage.getDirectory();
-      const handle = await opfsRoot.getFileHandle("test.webm");
+      const handle = await opfsRoot.getFileHandle("test.mp4");
       const file = await handle.getFile();
       const url = URL.createObjectURL(file);
       const a = document.createElement('a');
-      a.download = 'test.webm';
+      a.download = 'test.mp4';
       a.href = url;
       a.style.display = 'none';
       document.body.appendChild(a);
@@ -148,10 +158,6 @@ export class FaceDetector extends LitElement {
 
   render() {
     return html`
-      <div>
-        <button @click=${this.stopRecording}>Stop Recording</button>
-        <button @click=${this.exportRecording}>Export Recording</button>
-      </div>
       <div id="container">
         <video id="video" muted=true autoplay=true width="640" height="480"></video>
         <canvas id="canvas"></canvas>
