@@ -23,6 +23,10 @@ export class BookPage extends SignalWatcher(LitElement) {
     this.requestUpdate();
   }
 
+  firstUpdated() {
+    console.log(this.kezaruu);
+  }
+
   render() {
     const detection = faceDetection.get();
     this.kezaruu?.setAnimated(detection.numFaces >= this.numFaces);

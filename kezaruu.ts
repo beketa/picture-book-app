@@ -48,76 +48,68 @@ export class Kezaruu extends LitElement implements Actor {
 
   private isAnimatedInternal: boolean = false;
 
-  private blink: Motion | undefined;
-  private faceMotion: Motion | undefined;
-  private handMotion: Motion | undefined;
+  private blink = new Motion(this, async () => {
+    await this.eyes.animate(
+      [
+        { backgroundPosition: '0 0' },
+        { backgroundPosition: '0 -1536px' },
+        { backgroundPosition: '0 -3072px' },
+        { backgroundPosition: '0 -1536px' },
+        { backgroundPosition: '0 0' },
+      ],
+      {
+        duration: 125,
+        direction: 'normal',
+        easing: 'steps(4)'
+      }
+    ).finished;
+  }, () => Math.random() * 10000 + 200);
 
-  firstUpdated() {
-    this.setAnimated(false);
+  private faceMotion = new Motion(this, async () => {
+    const moveFrames = (length: number) => [
+      { transform: 'translate(0, 0)', easing: 'ease-in-out' },
+      { transform: `translate(${length}px, 0)`, easing: 'ease-in-out', offset: 0.1 },
+      { transform: `translate(${length}px, 0)`, easing: 'ease-in-out', offset: 0.9 },
+      { transform: 'translate(0, 0)' },
+    ];
+    const options = {
+      duration: 2000,
+      direction: 'normal' as PlaybackDirection,
+    };
 
-    this.blink = new Motion(this, async () => {
-      await this.eyes?.animate(
-        [
-          { backgroundPosition: '0 0' },
-          { backgroundPosition: '0 -1536px' },
-          { backgroundPosition: '0 -3072px' },
-          { backgroundPosition: '0 -1536px' },
-          { backgroundPosition: '0 0' },
-        ],
-        {
-          duration: 200,
-          direction: 'normal',
-          easing: 'steps(4)'
-        }
-      ).finished;
-    }, () => Math.random() * 10000 + 200);
-
-    this.faceMotion = new Motion(this, async () => {
-      const moveFrames = (length: number) => [
-        { transform: 'translate(0, 0)', easing: 'ease-in-out' },
-        { transform: `translate(${length}px, 0)`, easing: 'ease-in-out', offset: 0.1 },
-        { transform: `translate(${length}px, 0)`, easing: 'ease-in-out', offset: 0.9 },
-        { transform: 'translate(0, 0)' },
-      ];
-      const options = {
-        duration: 2000,
-        direction: 'normal' as PlaybackDirection,
-      };
-
-      await Promise.all([
-        this.head.animate(moveFrames(-10), options).finished,
-        this.ears.animate(
-          [
-            { transform: 'translate(0, 0)', easing: 'ease-in-out' },
-            { transform: `translate(-10px, 0)`, easing: 'ease-in-out', offset: 0.1 },
-            { transform: `translate(-10px, 0) scaleY(0.95)`, easing: 'ease-in-out', offset: 0.3 },
-            { transform: `translate(-10px, 0)`, easing: 'ease-in-out', offset: 0.5 },
-            { transform: `translate(-10px, 0) scaleY(0.95)`, easing: 'ease-in-out', offset: 0.7 },
-            { transform: `translate(-10px, 0)`, easing: 'ease-in-out', offset: 0.9 },
-            { transform: 'translate(0, 0)' },
-          ],
-          options
-        ).finished,
-        this.face.animate(moveFrames(-20), options).finished,
-        this.mouth.animate(moveFrames(-20), options).finished,
-        this.nose.animate(moveFrames(-30), options).finished,
-        this.eyes.animate(moveFrames(-20), options).finished]);
-    }, () => Math.random() * 10000 + 5000)
-
-    this.handMotion = new Motion(this, async () => {
-      await this.hand?.animate(
+    await Promise.all([
+      this.head.animate(moveFrames(-15), options).finished,
+      this.ears.animate(
         [
           { transform: 'translate(0, 0)', easing: 'ease-in-out' },
-          { transform: `translate(-10px, 30px)`, easing: 'ease-in-out' },
+          { transform: `translate(-15px, 0)`, easing: 'ease-in-out', offset: 0.1 },
+          { transform: `translate(-15px, 0) scaleY(0.95)`, easing: 'ease-in-out', offset: 0.3 },
+          { transform: `translate(-15px, 0)`, easing: 'ease-in-out', offset: 0.5 },
+          { transform: `translate(-15px, 0) scaleY(0.95)`, easing: 'ease-in-out', offset: 0.7 },
+          { transform: `translate(-15px, 0)`, easing: 'ease-in-out', offset: 0.9 },
           { transform: 'translate(0, 0)' },
         ],
-        {
-          duration: 2000,
-          direction: 'normal',
-        }
-      ).finished;
-    }, () => 3000);
-  }
+        options
+      ).finished,
+      this.face.animate(moveFrames(-40), options).finished,
+      this.mouth.animate(moveFrames(-50), options).finished,
+      this.nose.animate(moveFrames(-60), options).finished,
+      this.eyes.animate(moveFrames(-50), options).finished]);
+  }, () => Math.random() * 10000 + 5000);
+
+  private handMotion = new Motion(this, async () => {
+    await this.hand.animate(
+      [
+        { transform: 'translate(0, 0)', easing: 'ease-in-out' },
+        { transform: `translate(-10px, 30px)`, easing: 'ease-in-out' },
+        { transform: 'translate(0, 0)' },
+      ],
+      {
+        duration: 2000,
+        direction: 'normal',
+      }
+    ).finished;
+  }, () => 3000);
 
   isAnimated() {
     return this.isAnimatedInternal;
@@ -126,9 +118,9 @@ export class Kezaruu extends LitElement implements Actor {
   setAnimated(animated: boolean) {
     this.isAnimatedInternal = animated;
     if (this.isAnimated()) {
-      this.blink?.start();
-      this.faceMotion?.start();
-      this.handMotion?.start();
+      this.blink.repeat();
+      this.faceMotion.repeat();
+      this.handMotion.repeat();
     }
   }
 

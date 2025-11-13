@@ -7,10 +7,10 @@ export class Motion {
   constructor(
     private actor: Actor,
     private motion: () => Promise<void>,
-    private delay: () => number
+    private interval: () => number
   ) {}
 
-  async start() {
+  async repeat() {
     if (!this.actor.isAnimated() || this.isMoving) {
       return;
     }
@@ -18,7 +18,11 @@ export class Motion {
     await this.motion();
     setTimeout(() => {
       this.isMoving = false;
-      this.start();
-    }, this.delay())
+      this.repeat();
+    }, this.interval())
+  }
+
+  async test() {
+    await this.motion();
   }
 }
