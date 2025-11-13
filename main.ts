@@ -83,7 +83,7 @@ export class Main extends LitElement {
     this.faceDetector.exportRecording();
   }
 
-  changeNumFaces(e: InputEvent) {
+  changeNumFaces() {
     const numFaces = Number(this.numFacesSelect.options[this.numFacesSelect.selectedIndex].value);
     this.bookPage.setNumFaces(numFaces);
   }
@@ -110,7 +110,7 @@ export class Main extends LitElement {
         </div>
         <div class="button-group">
           <div>検出する顔の数</div>
-          <select id="num_faces" @input=${(e: InputEvent) => this.changeNumFaces(e)}>
+          <select id="num_faces" @input=${() => this.changeNumFaces()}>
             <option value="1" selected>1</option>
             <option value="2">2</option>
           </select>
@@ -121,4 +121,3 @@ export class Main extends LitElement {
       </div>`;
   }
 }
-

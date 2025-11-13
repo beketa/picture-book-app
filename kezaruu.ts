@@ -26,31 +26,27 @@ export class Kezaruu extends LitElement implements Actor {
   `;
 
   @query('img#head')
-  private head: HTMLElement | undefined;
+  private head!: HTMLElement;
 
   @query('img#face')
-  private face: HTMLElement | undefined;
+  private face!: HTMLElement;
 
   @query('img#ears')
-  private ears: HTMLElement | undefined;
+  private ears!: HTMLElement;
 
   @query('img#mouth')
-  private mouth: HTMLElement | undefined;
+  private mouth!: HTMLElement;
 
   @query('img#nose')
-  private nose: HTMLElement | undefined;
+  private nose!: HTMLElement;
 
   @query('div#eyes')
-  private eyes: HTMLElement | undefined;
+  private eyes!: HTMLElement;
 
   @query('img#hand')
-  private hand: HTMLElement | undefined;
+  private hand!: HTMLElement;
 
   private isAnimatedInternal: boolean = false;
-
-  private isBlinking: boolean = false;
-  private isMovingFace: boolean = false;
-  private isMovingHand: boolean = false;
 
   private blink: Motion | undefined;
   private faceMotion: Motion | undefined;
@@ -89,8 +85,8 @@ export class Kezaruu extends LitElement implements Actor {
       };
 
       await Promise.all([
-        this.head?.animate(moveFrames(-10), options).finished,
-        this.ears?.animate(
+        this.head.animate(moveFrames(-10), options).finished,
+        this.ears.animate(
           [
             { transform: 'translate(0, 0)', easing: 'ease-in-out' },
             { transform: `translate(-10px, 0)`, easing: 'ease-in-out', offset: 0.1 },
@@ -102,10 +98,10 @@ export class Kezaruu extends LitElement implements Actor {
           ],
           options
         ).finished,
-        this.face?.animate(moveFrames(-20), options).finished,
-        this.mouth?.animate(moveFrames(-20), options).finished,
-        this.nose?.animate(moveFrames(-30), options).finished,
-        this.eyes?.animate(moveFrames(-20), options).finished]);
+        this.face.animate(moveFrames(-20), options).finished,
+        this.mouth.animate(moveFrames(-20), options).finished,
+        this.nose.animate(moveFrames(-30), options).finished,
+        this.eyes.animate(moveFrames(-20), options).finished]);
     }, () => Math.random() * 10000 + 5000)
 
     this.handMotion = new Motion(this, async () => {

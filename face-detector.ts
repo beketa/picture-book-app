@@ -28,7 +28,7 @@ export class FaceDetector extends LitElement {
   private video!: HTMLVideoElement;
 
   private mediaRecorder: MediaRecorder | null = null;
-  private writableStream: any = null;
+  private writableStream: FileSystemWritableFileStream | null = null;
 
   async firstUpdated() {
     await this.loadModels();

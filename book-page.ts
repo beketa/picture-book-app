@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, query } from 'lit/decorators.js';
 import { SignalWatcher } from '@lit-labs/signals';
 import { faceDetection } from './signals.js';
 import { Kezaruu } from './kezaruu.js';
@@ -14,7 +14,7 @@ export class BookPage extends SignalWatcher(LitElement) {
   `;
 
   @query("kezaruu-element")
-  private kezaruu: Kezaruu | undefined;
+  private kezaruu!: Kezaruu;
 
   private numFaces = 1;
 
