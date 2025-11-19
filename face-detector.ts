@@ -22,7 +22,8 @@ export class FaceDetector extends LitElement {
 
   @query('#canvas')
   private canvas!: HTMLCanvasElement;
-  private buffer = document.createElement('canvas');
+  private detectionBuffer = document.createElement('canvas');
+  private canvasBuffer = document.createElement('canvas');
 
   @query('#video')
   private video!: HTMLVideoElement;
@@ -33,8 +34,8 @@ export class FaceDetector extends LitElement {
   async firstUpdated() {
     await this.loadModels();
 
-    this.canvas.width = this.buffer.width = this.video.width;
-    this.canvas.height = this.buffer.height = this.video.height;
+    this.canvas.width = this.detectionBuffer.width = this.canvasBuffer.width = this.video.width;
+    this.canvas.height = this.detectionBuffer.height = this.canvasBuffer.height = this.video.height;
 
     this.startVideoStream();
   }
@@ -54,45 +55,61 @@ export class FaceDetector extends LitElement {
   }
 
   startFaceDetection() {
+    setInterval(() => this.updateCanvas(), 1000 / 30);
     this.detectFaces();
   }
 
   private frameTimes: number[] = [];
   private frameRate = 0;
 
-  async detectFaces() {
+  private detections: faceapi.WithAge<faceapi.WithGender<{detection: faceapi.FaceDetection}>>[] | null = null;
 
-    const bufferContext = this.buffer.getContext('2d', { alpha: false, willReadFrequently: true });
+  async updateCanvas() {
+    const bufferContext = this.canvasBuffer.getContext('2d', { alpha: false });
     const canvasContext = this.canvas.getContext('2d', { alpha: false });
 
-    if (bufferContext && canvasContext) {
-      bufferContext.clearRect(0, 0, this.buffer.width, this.buffer.height);
-      bufferContext.drawImage(this.video, 0, 0, this.buffer.width, this.buffer.height);
-
-      const detections = await faceapi.detectAllFaces(this.buffer, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
-      faceapi.draw.drawDetections(this.buffer, detections);
-
-      const newFaceDetection = {
-        numFaces: detections.length,
-        faces: detections.map(detection => ({ age: detection.age })),
-      };
-      faceDetection.set(newFaceDetection);
-
-      const textLabel = `${(new Date()).toLocaleString()}\ndetected faces: ${detections.length}\nframe rate: ${this.frameRate.toFixed(1)}`;
-      (new faceapi.draw.DrawTextField(textLabel.split('\n'), new faceapi.Point(0, 0))).draw(this.buffer);
-
-      canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      canvasContext.drawImage(this.buffer, 0, 0, this.buffer.width, this.buffer.height);
-
-      this.frameTimes.push(Date.now());
-      if (this.frameTimes.length > 5) {
-        this.frameTimes.shift();
-      }
-      if (this.frameTimes.length == 5) {
-        this.frameRate = 5000 / (this.frameTimes[4] - this.frameTimes[0]);
-      }
+    if (!bufferContext || !canvasContext) {
+      return;
     }
-    setTimeout(() => this.detectFaces(), 50);
+
+    bufferContext.drawImage(this.video, 0, 0, this.canvasBuffer.width, this.canvasBuffer.height);
+
+    if (this.detections) {
+      faceapi.draw.drawDetections(this.canvasBuffer, this.detections);
+
+      const textLabel = `${(new Date()).toLocaleString()}\ndetected faces: ${this.detections.length}\nframe rate: ${this.frameRate.toFixed(1)}`;
+      (new faceapi.draw.DrawTextField(textLabel.split('\n'), new faceapi.Point(0, 0))).draw(this.canvasBuffer);
+    }
+
+    canvasContext.drawImage(this.canvasBuffer, 0, 0, this.canvasBuffer.width, this.canvasBuffer.height);
+  }
+
+  async detectFaces() {
+    const bufferContext = this.detectionBuffer.getContext('2d', { alpha: false, willReadFrequently: true });
+
+    if (!bufferContext) {
+      setTimeout(() => this.detectFaces(), 100);
+      return;
+    }
+
+    bufferContext.drawImage(this.video, 0, 0, this.detectionBuffer.width, this.detectionBuffer.height);
+
+    this.detections = await faceapi.detectAllFaces(this.detectionBuffer, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+
+    const newFaceDetection = {
+      numFaces: this.detections.length,
+      faces: this.detections.map(detection => ({ age: detection.age })),
+    };
+    faceDetection.set(newFaceDetection);
+
+    this.frameTimes.push(Date.now());
+    if (this.frameTimes.length > 5) {
+      this.frameTimes.shift();
+    }
+    if (this.frameTimes.length == 5) {
+      this.frameRate = 5000 / (this.frameTimes[4] - this.frameTimes[0]);
+    }
+    setTimeout(() => this.detectFaces(), 100);
   }
 
   async startRecording() {
