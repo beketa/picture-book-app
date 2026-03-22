@@ -4877,7 +4877,7 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Rh(e.split(`
     }
   `;En([re("img#head")],Vt.prototype,"head",2);En([re("img#face")],Vt.prototype,"face",2);En([re("img#ears")],Vt.prototype,"ears",2);En([re("img#mouth")],Vt.prototype,"mouth",2);En([re("img#nose")],Vt.prototype,"nose",2);En([re("div#eyes")],Vt.prototype,"eyes",2);En([re("img#hand")],Vt.prototype,"hand",2);Vt=En([ke("kezaruu-actor")],Vt);var I1=Object.defineProperty,S1=Object.getOwnPropertyDescriptor,Gn=(r,t,e,n)=>{for(var o=n>1?void 0:n?S1(t,e):t,a=r.length-1,i;a>=0;a--)(i=r[a])&&(o=(n?i(t,e,o):i(o))||o);return n&&o&&I1(t,e,o),o};let en=class extends Qt{constructor(){super(...arguments),this.isRecording=!1,this.showCamera=!0}toggleRecording(){this.isRecording?(this.faceDetector.stopRecording(),this.recordingToggle.innerText="●",this.exportButton.disabled=!1):(this.faceDetector.startRecording(),this.recordingToggle.innerText="■"),this.isRecording=!this.isRecording}exportVideo(){if(new URLSearchParams(window.location.search).has("webview")){const t=document.createElement("a");t.href="export:test.mp4",t.style.display="none",document.body.appendChild(t),t.click(),document.body.removeChild(t)}else this.faceDetector.exportRecording()}changeNumFaces(){const r=Number(this.numFacesSelect.options[this.numFacesSelect.selectedIndex].value);this.bookViewer.setNumFacesThreshold(r)}toggleCamera(){this.showCamera?(this.faceDetector.style.position="absolute",this.faceDetector.style.visibility="hidden",this.cameraToggle.innerHTML="カメラ画面を見せる"):(this.faceDetector.style.position="static",this.faceDetector.style.visibility="",this.cameraToggle.innerHTML="カメラ画像を隠す"),this.showCamera=!this.showCamera}render(){return new URLSearchParams(window.location.search).has("webview")?he`
         <div id="main">
-          <div>
+          <div class="webview">
             <face-detector class="webview"></face-detector>
             <book-viewer class="webview"></book-viewer>
           </div>
@@ -4902,6 +4902,11 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Rh(e.split(`
       display: flex;
     }
 
+    div#main div.webview {
+      align-items: center;
+      justify-content: center;
+    }
+
     face-detector.webview {
       position: absolute;
       transform: scale(0.02);
@@ -4909,8 +4914,8 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Rh(e.split(`
     }
 
     book-viewer.webview {
-      transform: scale(calc(100vw / 690px));
-      transform-origin: top left;
+      transform: scale(calc(95vw / 690px));
+      transform-origin: top center;
     }
 
     .button-group {
