@@ -4658,6 +4658,7 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Rh(e.split(`
     }
 
     .actor {
+      overflow: hidden;
       position: absolute;
     }
     
@@ -4914,6 +4915,7 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Rh(e.split(`
     }
 
     book-viewer.webview {
+      overflow: hidden;
       transform: scale(calc(95vw / 690px));
       transform-origin: top center;
     }
