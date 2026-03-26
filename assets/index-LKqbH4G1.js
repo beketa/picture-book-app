@@ -4971,6 +4971,8 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Sh(e.split(`
 
     face-detector.webview {
       position: absolute;
+      top: 0;
+      left: 0;
       transform: scale(0.05);
       transform-origin: top left;
       z-index: 0;
