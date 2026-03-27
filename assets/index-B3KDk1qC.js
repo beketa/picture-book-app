@@ -4933,9 +4933,9 @@ frame rate: ${this.frameRate.toFixed(1)}`;new Sh(e.split(`
             ${this.isRecording?ce`<book-viewer class="webview" @last-button-click="${()=>this.handleLastButtonClick()}">
                      </book-viewer>`:ce`<div class="start-screen">
                        <p class="start-screen">
-                         えほんあぷりへ ようこそ!<br>
+                         えほんアプリへ ようこそ!<br>
                          えほんをよむときは<br>
-                         ちかづきすぎないようにみてね<br>
+                         ちかづきすぎないようにしてね<br>
                        </p>
                        <img src="./img/start-screen.png"></img>
                        <div class="button-container">
